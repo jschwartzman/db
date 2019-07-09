@@ -1,0 +1,7 @@
+.gitignore
+.vscode/
+dbsrc/
+debug_dir/
+release_dir/
+test_unicode/
+vscode_workspace.code-workspace
