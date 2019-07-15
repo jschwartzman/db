@@ -4,4 +4,7 @@ dbsrc/
 debug_dir/
 release_dir/
 test_unicode/
+db
+debug
+release
 vscode_workspace.code-workspace
