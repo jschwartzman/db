@@ -3,7 +3,7 @@
  *  John Schwartzman, Forte Systems, Inc.
  *
  *  FILENAME:
- *      Place.cpp
+ *      Language.cpp
  *
  *  DESCRIPTION:
  *      A ResultSet access object class (implementation).
@@ -19,41 +19,51 @@
 #include <cppconn/resultset.h>
 #include "StrStrmBuf.h"
 #include "Terminal.h"
-#include "Place.h"
+#include "Language.h"
 
 using namespace std;
 using namespace utility;
 
-long Place::_snRecCount = 0;    // static counter
+long Language::_snRecCount = 0;    // static counter
 
-void Place::display()
+void Language::display()
 {
     ++_snRecCount;
     StrStrmBuf ssb;
-    ssb.rpad(_sField1, 40);
-    ssb.rpad(_sField2, 34);
-    ssb.rpad(_sField3, 34);
-    ssb.lpad(commaSeparate(_nField4), 14);
+    ssb.rpad(_sField1, 30);
+    long double ld = _nField2;
+    string s = to_string(ld);
+    if (ld == 100.0)
+    {
+        s = s.substr(0, 5);
+    }
+    else if (ld < 10.0)
+    {
+        s = s.substr(0, 3);
+    }
+    else
+    {
+        s = s.substr(0, 4);
+    }
+    ssb.lpad(s, 6);
     ssb << endl;
     Terminal::writeYellow(ssb);
 }
 
-long Place::display(sql::ResultSet *pRS, bool bDisplay)
+long Language::display(sql::ResultSet *pRS, bool bDisplay)
 {
-    Place::clearCount();
-    Place* pPlace;
+    Language::clearCount();
+    Language* pLanguage;
     while (pRS->next())
     {
-        pPlace = new Place(pRS->getString(1),
-                           pRS->getString(2),
-                           pRS->getString(3),
-                           pRS->getUInt64(4));
-        pPlace->display();                           
+        pLanguage = new Language(pRS->getString(1),
+                                 pRS->getDouble(2));
+        pLanguage->display();                           
     }
 
     if (bDisplay)
     {
         Terminal::displayCount(_snRecCount);
     }
-    return Place::getCount();
+    return Language::getCount();
 }

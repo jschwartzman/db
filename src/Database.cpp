@@ -12,53 +12,32 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/07/2019    John Schwartzman
+ *      07/12/2019    John Schwartzman
  *
  *****************************************************************************/
-#include "Database.h"
-#include "Place.h"
 #include "Terminal.h"
+#include "Database.h"
 
 using namespace std;
-using namespace utility;
 
-long Database::executeAndDisplay(string sContinent, bool bDisplay)
-{
-    setContinent(sContinent);
-
-    if (bDisplay)
-    {
-        Terminal::displayStatement(getSelectStatement());
-    }
-    _pResultSet = executeQuery();
-    Terminal::displayLabel("Continent", sContinent);
-    return Place::display(_pResultSet, bDisplay);
-}
-
-long Database::executePlaceQuery(string sPlaceQuery, 
-                                 string sPlaceLabel, 
-                                 bool bDisplay)
-{   
-    if (bDisplay)
-    {
-        Terminal::displayStatement(sPlaceQuery);
-    }
-    setSelectStatement(sPlaceQuery);
-    _pResultSet = executeQuery();
-    if (!sPlaceLabel.empty())
-    {
-        Terminal::displayLabel("Place", sPlaceLabel);
-    }
-    return Place::display(_pResultSet, bDisplay);
-}
-
-void Database::execute(const string sStatement, bool bDisplay)
+bool Database::execute(const string sStatement, bool bDisplay)
 {
     if (bDisplay)
     {
         Terminal::displayStatement(sStatement);
     }
-    _pStatement->execute(sStatement);
+    return _pStatement->execute(sStatement);
+}
+
+sql::ResultSet* Database::executeQuery(const std::string sSQLStatement)
+{
+        if (_pRS != nullptr)
+        {
+            delete _pRS;
+            _pRS = nullptr;
+        }
+        _pRS = _pStatement->executeQuery(sSQLStatement);
+        return _pRS;
 }
 
 long Database::queryHasRecords(const string sQuery, bool bDisplay)
@@ -68,11 +47,12 @@ long Database::queryHasRecords(const string sQuery, bool bDisplay)
         Terminal::displayStatement(sQuery);
     }
 
-    long nCount(0);
     sql::ResultSet* pRS = _pStatement->executeQuery(sQuery);
+    long nCount = 0;
+
     while (pRS->next())
     {
-        nCount++;   // count the number of records returned
+        ++nCount;
     }
 
     if (bDisplay)
@@ -102,6 +82,15 @@ long Database::executeCountQuery(const string sQuery, bool bDisplay)
 
     delete pRS;
     return nCount;
+}
+
+void Database::deleteResultSet()  // not necessary - may reduce memory usage
+{ 
+    if (_pRS != nullptr) 
+    {
+        delete _pRS;
+        _pRS = nullptr;
+    }
 }
 
 //***************************************************************************

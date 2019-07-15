@@ -12,78 +12,70 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/08/2019    John Schwartzman
+ *      07/15/2019    John Schwartzman
  *
  *****************************************************************************/
 
 #ifndef _TERMINAL_H	//********************************************************
 #define _TERMINAL_H //********************************************************
 
-#include <streambuf>
-#include "StrStrmBuf.h"
+#include <iostream>
 
 using namespace std;
-using namespace utility;
 
 class Terminal
 {
 public:
-	static constexpr char* RED     = (char*)"\033[1;31;40m"; //    red on black
-	static constexpr char* GREEN   = (char*)"\033[1;32;40m"; //  green on black
-	static constexpr char* BLUE    = (char*)"\033[1;34;40m"; //   blue on black
-	static constexpr char* CYAN    = (char*)"\033[1;36;40m"; //   cyan on black
-	static constexpr char* WHITE   = (char*)"\033[0;37;40m"; //  white on black
-	static constexpr char* VIOLET  = (char*)"\033[1;35;40m"; // violet on black
-	static constexpr char* BLACK   = (char*)"\033[0;30;40m"; //  black on black
-	static constexpr char* YELLOW  = (char*)"\033[1;33;40m"; // yellow on black
-	static constexpr char* RESET   = (char*)"\033[0m";		 // normal text
+	static constexpr char* RED    = (char*)"\033[1;91;40m"; //    red on black
+	static constexpr char* GREEN  = (char*)"\033[1;92;40m"; //  green on black
+	static constexpr char* BLUE   = (char*)"\033[1;94;40m"; //   blue on black
+	static constexpr char* CYAN   = (char*)"\033[1;96;40m"; //   cyan on black
+	static constexpr char* WHITE  = (char*)"\033[1;97;40m"; //  white on black
+	static constexpr char* VIOLET = (char*)"\033[1;95;40m"; // violet on black
+	static constexpr char* BLACK  = (char*)"\033[1;90;40m"; //  black on black
+	static constexpr char* YELLOW = (char*)"\033[1;93;40m"; // yellow on black
+	static constexpr char* RESET  = (char*)"\033[0m";		//     normal text
 
-	static void clearScreen() { cout << "\033c"; }
-	static void waitForUserInput()
+	static void displayCount(const long nCount);
+	static inline void clearScreen() { cout << "\033[2J\033[1;1H"; }
+	static inline void resetAndClearScreen() { system("reset && clear"); }
+	static inline void waitForUserInput()
 	{
-		std::cout << RED << "\n\n\nPress ENTER to continue..." << RESET;
+		cout << RED << "\n\n\nPress ENTER to continue..." << RESET;
 		getc(stdin);
 		clearScreen();
 	}
-	static void writeYellow(string s)
+	static inline void writeYellow(const string& sContent)
 	{
-		StrStrmBuf ssb(YELLOW);
-		ssb << s << RESET;
-		cout << ssb;
+		cout << YELLOW << sContent << RESET;
 	}
-	static void writeYellow(StrStrmBuf s)
+	static inline void displayStatement(const string& s)
 	{
-		StrStrmBuf ssb(YELLOW);
-		ssb << s << RESET;
-		cout << ssb;
+		cout << GREEN   << "===== " 
+			 << VIOLET  << "Executing: " 
+			 << YELLOW  << s 
+			 << GREEN << " =====\n"
+			 << RESET;
 	}
-	static void displayCount(const long nCount)
+	static inline void displayLabel(const string& sLabel, 
+									const string& sContent = "")
 	{
-		cout << "===== Number of records found: " 
-				<< YELLOW
-				<< commaSeparate(nCount)
-				<< RESET
-				<< " =====\n";
+		cout << GREEN    << "\n===== " 
+			 << VIOLET   << sLabel << ": " << BLUE
+			 << sContent << GREEN  << " =====\n"
+			 << RESET;
 	}
-	static void displayStatement(const std::string s)
+	static inline void displayCaption(const string& sCaption)
 	{
-		cout << "===== " 
-				<< VIOLET << "Executing: " 
-				<< YELLOW 
-				<< s << RESET << " =====\n";
+		cout << CYAN << sCaption << RESET;
 	}
-	static void displayLabel(const string sLabel, const string sContent)
-	{
-		cout << "\n===== " << sLabel << ": "
-				<< sContent   << " =====\n";
-	}
-	static void displayCaption(const string sCaption)
-	{
-		cout << sCaption;
-	}
-	static void displayNewLines(const int nCount = 1)
+	static inline void displayNewLines(const int nCount = 1)
 	{
 		cout << string(nCount, '\n');
+	}
+	static inline void reset()
+	{
+		cout << RESET;
 	}
 };
 
