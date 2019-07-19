@@ -19,7 +19,7 @@
 #ifndef _TERMINAL_H	//********************************************************
 #define _TERMINAL_H //********************************************************
 
-#include <iostream>
+#include <iostream>		// for std::cout
 
 using namespace std;
 

@@ -12,7 +12,7 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/15/2019    John Schwartzman
+ *      07/19/2019    John Schwartzman
  *
  *****************************************************************************/
 #include <stdlib.h>             // defines EXIT_SUCCESS and EXIT_FAILURE
@@ -37,16 +37,22 @@ int main(int argc, char *argv[])
     unique_ptr <Database> pDB(new Database("worlduser", "worlduser123"));
 
     Terminal::displayLabel("A Gentle Introduction to SQL");
-    Terminal::displayCaption("\n\nWelcome to a brief SQL tutorial.\n"
-                             "Here you'll encounter a variety of annotated "
-                             "SQL queries and statements using the world "
-                             "database.\nIn one case you'll "
-                             "alter the program's flow of control based on "
-                             "the results of a query.\n\n"
+    Terminal::displayCaption("\n\nWelcome to this brief SQL tutorial.\n"
+                             "You will encounter a variety of annotated "
+                             "SQL queries and statements here, using the world "
+                             "database.\nThe world database is just a "
+                             "parameter passed into the program. You can "
+                             "substitute\nany database and any "
+                             "commands and queries that you like. You can "
+                             "even create and use your own database.\nYou "
+                             "can alter the program's flow of control based on "
+                             "the results of a SQL query.\n\n"
                              "During this tutorial, you will be able to view "
                              "previous screens by using the mouse to scroll "
                              "your terminal up."
-                             "\n\nRelax, sit back and enjoy.");
+                             "\nPlease set your console to a black background "
+                             "and make it full screen.\n\n"
+                             "Relax, sit back and enjoy.");
     Terminal::waitForUserInput();
 
     //******************************* Screen 1 ******************************
@@ -55,21 +61,22 @@ int main(int argc, char *argv[])
                              "city TABLE.\nNote the various conditions "
                              "in the WHERE clause. You're asking to see "
                              "four specific\nCOLUMNs from two separate TABLEs "
-                             "combining those ROWs in both tables where "
-                             "every part\nof the WHILE clause is satisfied. "
-                             "Note that the city TABLE has an id COLUMN.\n"
+                             "combining those ROWs in both TABLEs where "
+                             "every part\nof the WHILE clause is satisfied."
+                             "\n\n"
                              "The country TABLE doesn't have a COLUMN where "
                              "the capital city is saved by name. Instead,\n"
-                             "the country.capital COLUMN holds the id "
-                             "number of its capital city. We need to join\n"
+                             "country's capital COLUMN holds the ID "
+                             "number of its capital city. You need to join\n"
                              "the country TABLE and the city TABLE together "
-                             "in order to read a country's capital city.\n\n\n");
+                             "in order to read a country's capital city name.\n"
+                             "The ID COLUMN is the PRIMARY KEY of the city TABLE.\n\n\n");
 
     string sSelectStmt = "SELECT country.name, city.name, "
                          "country.HeadOfState, country.Population\n"
                          "FROM country INNER JOIN city\n"
                          "WHERE country.Continent = 'North America' "
-                         "AND country.capital = city.id AND "
+                         "AND country.capital = city.ID AND "
                          "country.Population >= 1000000"
                          "\nORDER BY country.name";
 
@@ -78,12 +85,12 @@ int main(int argc, char *argv[])
     ResultSet* pRS = pDB->executeQuery(sSelectStmt);
     Place::display(pRS, true);
     pDB->deleteResultSet();
-    Terminal::displayCaption("\n\nNOTE: You can change the statement shown "
-                             "above so that it reads\n\"SELECT ... "
-                             "FROM country, city WHERE ... \" "
-                             "and it means the same thing.\n"
-                             "Why did you get so few matches? You're only "
-                             "looking for countries with populations\n"
+    Terminal::displayCaption("\n\nNOTE: You can change the SQL query "
+                             "shown above so that it reads\n\"SELECT ... "
+                             "FROM country, city WHERE ...\" "
+                             "and it means exactly the same thing.\n\n"
+                             "Why did you get so few matches?\nYou're only "
+                             "looking for countries with populations "
                              "greater than 1 million.");
     Terminal::waitForUserInput();
 
@@ -91,11 +98,11 @@ int main(int argc, char *argv[])
     Terminal::displayCaption("You're now asking the database if the "
                              "country TABLE\nhas any ROWs where the "
                              "HeadOfState COLUMN contains "
-                             "George W. Bush.\nNote the use of the "
+                             "George W. Bush.\n\nNote the use of the "
                              "wildcard character '%'. It will match any "
                              "number of characters.\nThe wildcard "
                              "character '_' will match any one "
-                             "character.\nWe employ 'LIKE' instead of "
+                             "character.\nEmploy 'LIKE' instead of "
                              "'=' when using wildcards.\n\n\n");
 
     string sTestHeadOfState = "SELECT COUNT(HeadOfState) FROM country\nWHERE "
@@ -103,36 +110,40 @@ int main(int argc, char *argv[])
     long nCount = pDB->executeCountQuery(sTestHeadOfState, true);
     if (nCount) // condition branch based on result of last COUNT query
     {
-      StrStrmBuf ssb("\n\n\nAccording to the database, George is the "
+      StrStrmBuf ssb("\n\n\nAccording to the database, George Bush is the "
                      "Head Of State of ");
-      ssb << nCount << " countries.\nThis database is way out of date.\n"
-                       "Forgive us for writing this next UPDATE statement!";
+      ssb << nCount << " countries.\nThis database is way out of date, "
+                       "but we'll stay in the past.\nExecute the following "
+                       "UPDATE statement.\n\n\n";
       Terminal::displayCaption(ssb);
-      Terminal::displayNewLines(3);
       // execute an UPDATE statement
       string sStmt = "UPDATE country "
-                     "SET HeadOfState = 'Donald Trump'\n"
-                     "WHERE HeadOfState = 'George W. Bush'";
+                     "SET HeadOfState = 'Barack Obama'\n"
+                     "WHERE HeadOfState LIKE 'George%Bush'";
       pDB->execute(sStmt, true);
     }
     else
     {
       Terminal::displayCaption("\n\n\nNo records found. "
-                               "The Donald must be president. "
-                               "Let's change that!\nYou'll "
+                               "Barack Obama must be president of "
+                               "the US.\n"
+                               "Let's change that and restore the "
+                               "original content of the database.\nYou'll "
                                "use an UPDATE statement to restore "
                                "the database's previous HeadOfState.\n\n");
       // execute an UPDATE statement
       string sStmt = "UPDATE country "
                      "SET HeadOfState = 'George W. Bush'\n"
-                     "WHERE HeadOfState = 'Donald Trump'";
+                     "WHERE HeadOfState = 'Barack Obama'";
       pDB->execute(sStmt, true);
     }
     Terminal::waitForUserInput();
 
     //******************************* Screen 3 ******************************
-    Terminal::displayCaption("Now see who's president of the US.\nYou're "
-                             "executing the same SQL query as last time\n\n");
+    Terminal::displayCaption("You're executing the same SQL query as last time\n"
+                             "but, notice how the database has been changed.\n\n"
+                             "You're using the Place ResultSet display class "
+                             "to display this and other, similar queries.\n\n\n");
     Terminal::displayStatement(sSelectStmt);
     // reexecute the SELECT statement we used earlier
     pRS = pDB->executeQuery(sSelectStmt);
@@ -145,7 +156,8 @@ int main(int argc, char *argv[])
     Terminal::displayCaption("Here are a couple more count queries.\n"
                              "Count queries return a ResultSet "
                              "containing a single element.\n"
-                             "That element contains a long integer.\n\n\n");
+                             "That element contains a long integer "
+                             "representing the number\nof rows retrieved.\n\n\n");
     // execute a SELECT COUNT statement
     string sCountQuery = "SELECT COUNT(HeadOfState) FROM country";
     pDB->executeCountQuery(sCountQuery, true);
@@ -165,9 +177,14 @@ int main(int argc, char *argv[])
     Terminal::waitForUserInput();
 
     //******************************* Screen 5 ******************************
-    Terminal::displayCaption("Execute an INSERT statment with multiple "
-                             "rows.\nYou can achieve the same results " 
-                             "using two separate INSERT statements\n\n");
+    Terminal::displayCaption("We can add items to and remove items from the "
+                             "database.\nExecute an INSERT statment with multiple "
+                             "rows.\nYou can also achieve the same results " 
+                             "using two separate INSERT statements.\n\n"
+                             "The city TABLE has an ID COLUMN, but we don't "
+                             "mention it in the the INSERT statement.\nThat's "
+                             "because the ID COLUMN is a PRIMARY KEY. It is\n"
+                             "an auto incrementing value chosen by the RDBMS.\n\n");
 
     // execute an INSERT statement with multiple rows
     string sStmt = "INSERT INTO city (name, countrycode, district, population) "
@@ -190,7 +207,10 @@ int main(int argc, char *argv[])
     pDB->deleteResultSet();
     Terminal::displayCaption("\n\nExecute a DELETE statement to remove\n"
                              "the rows you've just inserted into the city "
-                             "TABLE.\n\n");
+                             "TABLE.\nYou must be specific enough to avoid "
+                             "deleting Columbia, North Caroline, if it\n"
+                             "exists in the database. That's why we need "
+                             "district = 'Maryland' in the WHERE clause.\n\n");
 
     // execute a DELETE statement to undo what you just inserted
     sStmt = "DELETE FROM city WHERE district = 'Maryland' AND\n"
@@ -208,6 +228,9 @@ int main(int argc, char *argv[])
     pRS = pDB->executeQuery(sStmt);
     Place::display(pRS, true);
     pDB->deleteResultSet();
+    Terminal::displayCaption("\n\nYou've deleted the records you added and "
+                             "the city TABLE is restored to its original "
+                             "form.\n");
     Terminal::waitForUserInput();
     
     //******************************* Screen 6 ******************************
@@ -233,8 +256,8 @@ int main(int argc, char *argv[])
     Terminal::displayCaption("Let use the countrylanguage TABLE to find out "
                              "the percentage of English speakers by country."
                              "\nThis SQL query produces a name and a long "
-                             "double. The ResultSet display class,\n"
-                             "Language is used to display this query.\n\n\n");
+                             "double. The Language ResultSet display class\n"
+                             "is used to display this query.\n\n\n");
 
     sStmt =  "SELECT name, percentage FROM country, countrylanguage WHERE\n"
              "country.code=countrylanguage.countrycode "

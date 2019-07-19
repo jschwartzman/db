@@ -12,11 +12,10 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/14/2019    John Schwartzman
+ *      07/17/2019    John Schwartzman
  *
  *****************************************************************************/
 
-#include <iostream>
 #include "StrStrmBuf.h"
 #include "Terminal.h"
 

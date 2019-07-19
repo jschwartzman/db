@@ -12,7 +12,7 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/14/2019    John Schwartzman
+ *      07/19/2019    John Schwartzman
  *
  *****************************************************************************/
 
@@ -28,7 +28,6 @@ long Language::_snRecCount = 0;    // static counter
 
 void Language::display()
 {
-    ++_snRecCount;
     StrStrmBuf ssb;
     ssb.rpad(_sField1, 30);
     long double ld = _nField2;
@@ -52,13 +51,14 @@ void Language::display()
 
 long Language::display(sql::ResultSet *pRS, bool bDisplay)
 {
-    Language::clearCount();
+    _snRecCount = 0;
     Language* pLanguage;
     while (pRS->next())
     {
         pLanguage = new Language(pRS->getString(1),
                                  pRS->getDouble(2));
         pLanguage->display();                           
+        ++_snRecCount;
     }
 
     if (bDisplay)
