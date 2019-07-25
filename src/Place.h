@@ -12,7 +12,7 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/14/2019    John Schwartzman
+ *      07/21/2019    John Schwartzman
  *
  *****************************************************************************/
 #ifndef PLACE_  //************************************************************
@@ -23,7 +23,6 @@ typedef sql::ResultSet* pRS;    // just the type definition is sufficient here
 class Place
 {
 private:
-    static long       _snRecCount;
     const std::string _sField1;
     const std::string _sField2;
     const std::string _sField3;
@@ -38,10 +37,8 @@ public:
                                     _sField3(headOfState),
                                     _nField4(population)    {}
     ~Place() {}                         // destructor
-    static void clearCount()    { _snRecCount = 0; }
-    static long getCount()      { return _snRecCount; }
     void display();
-    static long display(sql::ResultSet* pRS, bool bDisplayCount = false);
+    static long display(sql::ResultSet* pRS, bool bDisplayCount = true);
 };
 
 #endif //*************************** PLACE_H ********************************

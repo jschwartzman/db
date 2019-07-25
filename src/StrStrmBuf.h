@@ -2,7 +2,6 @@
  *
  *	NOTICE:
  *      Copyright 2011, Forte Systems, Inc.
- *      All rights reserved.
  *
  *  FILENAME:
  *      StrStrmBuf.h
@@ -15,7 +14,7 @@
  *
  *  AUTHOR:
  *      10/28/2011    John Schwartzman
-*		07/04/2019	  John Schwartzman
+*		07/23/2019	  John Schwartzman
  *****************************************************************************/
 #ifndef STRSTRMBUF_H_	//****************************************************
 #define STRSTRMBUF_H_	//****************************************************
@@ -60,16 +59,16 @@ public:
 		{ str(s); return *this; }
 	inline StrStrmBuf& operator=(const char* s)	{ str(s); return *this;	  }
 	inline StrStrmBuf& operator=(StrStrmBuf& rhs);
-	inline operator const char*()		{ return this->str().c_str();	  		  }
-	inline operator char*()				{ return (char*)this->str().c_str();	  }
-	inline operator const std::string()	{ return this->str();		  	          }
+	inline operator const char*()		{ return this->str().c_str();	  	 }
+	inline operator char*()				{ return (char*)this->str().c_str(); }
+	inline operator const std::string()	{ return this->str();		  	     }
 
 	StrStrmBuf& ltrim();
 	StrStrmBuf& rtrim();
 	StrStrmBuf& trim();
 
-	StrStrmBuf& lpad(const std::string& s, size_t nSize, char ch = ' ');
-	StrStrmBuf& rpad(const std::string& s, size_t nSize, char ch = ' ');
+	StrStrmBuf& lpad(const std::string& s,   size_t nSize, char ch = ' ');
+	StrStrmBuf& rpad(const std::string& s,   size_t nSize, char ch = ' ');
 	StrStrmBuf& center(const std::string& s, size_t nSize, char ch = ' ');
 };
 
@@ -114,6 +113,6 @@ __attribute__ ((unused))
 std::string formatDateTime(time_t* t = NULL,
                            const char* fmt = SH_DATETIME_FMT);
 
-// ***************************************************************************
+// **************************************************************************
 }	// end namespace utility
 #endif //***************************  STRSTRMBUF_H_ *************************

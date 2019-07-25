@@ -12,7 +12,7 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/15/2019    John Schwartzman
+ *      07/23/2019    John Schwartzman
  *
  *****************************************************************************/
 
@@ -38,7 +38,7 @@ public:
 
 	static void displayCount(const long nCount);
 	static inline void clearScreen() { cout << "\033[2J\033[1;1H"; }
-	static inline void resetAndClearScreen() { system("reset && clear"); }
+	static inline void resetAndClearScreen() { system("clear"); }
 	static inline void waitForUserInput()
 	{
 		cout << RED << "\n\n\nPress ENTER to continue..." << RESET;

@@ -2,10 +2,9 @@
  *
  *	NOTICE:
  *      Copyright 2011, Forte Systems, Inc.
- *      All rights reserved.
  *
  *  FILENAME:
- *      StrStrmBuf.h
+ *      StrStrmBuf.cpp
  *
  *  DESCRIPTION:
  *      a java-like string builder utility class - implementation
@@ -16,7 +15,7 @@
  *  AUTHOR:
  *      10/28/2011    John Schwartzman
  *		06/29/2018	  John Schwartzman
- *		06/26/2019	  John Schwartzman
+ *		07/23/2019	  John Schwartzman
  *****************************************************************************/
 #include <locale>			// for formatDateTime()
 #include <cstring>			// for strlen() in formatDateTime()
@@ -67,10 +66,10 @@ StrStrmBuf& StrStrmBuf::putch(char ch, size_t nCount)
 
 /*****************************************************************************
  *
- *  StrStrmBuf& StrStrmBuf::putstr(const std::string& str)
+ *  StrStrmBuf& StrStrmBuf::putstr(const string& str)
  *
  *****************************************************************************/
-StrStrmBuf& StrStrmBuf::putstr(const std::string& str)
+StrStrmBuf& StrStrmBuf::putstr(const string& str)
 {
 	for (size_t i = 0; i < str.length(); i++)
 	{

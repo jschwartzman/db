@@ -12,7 +12,7 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/12/2019    John Schwartzman
+ *      07/23/2019    John Schwartzman
  *
  *****************************************************************************/
 #ifndef DATABASE_H_ //********************************************************
@@ -22,6 +22,7 @@
 #include <cppconn/driver.h>
 #include <cppconn/resultset.h>
 #include <cppconn/statement.h>
+#include <cppconn/exception.h>  // handles sql::SQLException; used by clients
 
 class Database
 {
@@ -56,10 +57,11 @@ public:
         delete _pStatement;
         delete _pConnection;
     }
-    sql::ResultSet* executeQuery(const std::string sSQLStatement);
-    long queryHasRecords(const std::string sQuery, bool bDisplay = false);
-    bool execute(const std::string sStatement, bool bDisplay = false);
-    long executeCountQuery(const std::string sQuery, bool bDisplay = false);
+    sql::ResultSet* executeQuery(const std::string sStatement,
+                                 bool bDisplay = true);
+    long queryHasRecords(const std::string sQuery,   bool bDisplay = true);
+    bool execute(const std::string sStatement,       bool bDisplay = true);
+    long executeCountQuery(const std::string sQuery, bool bDisplay = true);
     void deleteResultSet();  // not necessary - may reduce memory usage 
  };
 

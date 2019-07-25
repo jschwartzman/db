@@ -12,20 +12,15 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/19/2019    John Schwartzman
+ *      07/25/2019    John Schwartzman
  *
  *****************************************************************************/
 #include <stdlib.h>             // defines EXIT_SUCCESS and EXIT_FAILURE
-#include <cppconn/exception.h>  // handles sql::SQLException
 #include "Database.h"           // encapsulates the Database Connection
 #include "Place.h"              // utility for displaying ResultSets
 #include "Language.h"           // utility for displaying ResultSets
 #include "Terminal.h"           // screen writing utility
 #include "StrStrmBuf.h"         // for text manipulation
-
-using namespace std;
-using namespace sql;
-using namespace utility;        // for StrStrmBuf
 
 int main(int argc, char *argv[])
 {
@@ -41,7 +36,7 @@ int main(int argc, char *argv[])
                              "You will encounter a variety of annotated "
                              "SQL queries and statements here, using the world "
                              "database.\nThe world database is just a "
-                             "parameter passed into the program. You can "
+                             "default parameter used by the program. You can "
                              "substitute\nany database and any "
                              "commands and queries that you like. You can "
                              "even create and use your own database.\nYou "
@@ -49,9 +44,9 @@ int main(int argc, char *argv[])
                              "the results of a SQL query.\n\n"
                              "During this tutorial, you will be able to view "
                              "previous screens by using the mouse to scroll "
-                             "your terminal up."
-                             "\nPlease set your console to a black background "
-                             "and make it full screen.\n\n"
+                             "your console up."
+                             "\nPlease set your console to use a black background "
+                             "and hit the F11 key to make it full screen.\n\n"
                              "Relax, sit back and enjoy.");
     Terminal::waitForUserInput();
 
@@ -80,10 +75,9 @@ int main(int argc, char *argv[])
                          "country.Population >= 1000000"
                          "\nORDER BY country.name";
 
-    Terminal::displayStatement(sSelectStmt);
+    sql::ResultSet* pRS = pDB->executeQuery(sSelectStmt);
     Terminal::displayLabel("Continent", "North America");
-    ResultSet* pRS = pDB->executeQuery(sSelectStmt);
-    Place::display(pRS, true);
+    Place::display(pRS);
     pDB->deleteResultSet();
     Terminal::displayCaption("\n\nNOTE: You can change the SQL query "
                              "shown above so that it reads\n\"SELECT ... "
@@ -107,20 +101,20 @@ int main(int argc, char *argv[])
 
     string sTestHeadOfState = "SELECT COUNT(HeadOfState) FROM country\nWHERE "
                               "HeadOfState LIKE 'George%Bush'";
-    long nCount = pDB->executeCountQuery(sTestHeadOfState, true);
+    long nCount = pDB->executeCountQuery(sTestHeadOfState);
     if (nCount) // condition branch based on result of last COUNT query
     {
-      StrStrmBuf ssb("\n\n\nAccording to the database, George Bush is the "
-                     "Head Of State of ");
+      utility::StrStrmBuf ssb("\n\n\nAccording to the database, "
+                              "George Bush is the Head Of State of ");
       ssb << nCount << " countries.\nThis database is way out of date, "
-                       "but we'll stay in the past.\nExecute the following "
+                       "but we'll stay firmly in the past.\nExecute the following "
                        "UPDATE statement.\n\n\n";
       Terminal::displayCaption(ssb);
       // execute an UPDATE statement
       string sStmt = "UPDATE country "
                      "SET HeadOfState = 'Barack Obama'\n"
                      "WHERE HeadOfState LIKE 'George%Bush'";
-      pDB->execute(sStmt, true);
+      pDB->execute(sStmt);
     }
     else
     {
@@ -135,20 +129,20 @@ int main(int argc, char *argv[])
       string sStmt = "UPDATE country "
                      "SET HeadOfState = 'George W. Bush'\n"
                      "WHERE HeadOfState = 'Barack Obama'";
-      pDB->execute(sStmt, true);
+      pDB->execute(sStmt);
     }
     Terminal::waitForUserInput();
 
     //******************************* Screen 3 ******************************
     Terminal::displayCaption("You're executing the same SQL query as last time\n"
-                             "but, notice how the database has been changed.\n\n"
+                             "but, notice how the database has changed.\n\n"
                              "You're using the Place ResultSet display class "
-                             "to display this and other, similar queries.\n\n\n");
-    Terminal::displayStatement(sSelectStmt);
+                             "to display these and other, similar query results."
+                             "\n\n\n");
     // reexecute the SELECT statement we used earlier
     pRS = pDB->executeQuery(sSelectStmt);
     Terminal::displayLabel("Continent", "North America");
-    Place::display(pRS, true);
+    Place::display(pRS);
     pDB->deleteResultSet();
     Terminal::waitForUserInput();
 
@@ -160,12 +154,12 @@ int main(int argc, char *argv[])
                              "representing the number\nof rows retrieved.\n\n\n");
     // execute a SELECT COUNT statement
     string sCountQuery = "SELECT COUNT(HeadOfState) FROM country";
-    pDB->executeCountQuery(sCountQuery, true);
+    pDB->executeCountQuery(sCountQuery);
 
     Terminal::displayNewLines(3);
     // execute a SELECT COUNT statement
     sCountQuery = "SELECT COUNT(DISTINCT HeadOfState) FROM country";
-    pDB->executeCountQuery(sCountQuery, true);
+    pDB->executeCountQuery(sCountQuery);
 
     Terminal::displayCaption("\n\nNote that the number of DISTINCT (unique) "
                              "heads of state is less\nthan the total number "
@@ -192,7 +186,7 @@ int main(int argc, char *argv[])
                    "('Columbia',      'USA', 'Maryland', 100000),\n"
                    "('Ellicott City', 'USA', 'Maryland',  85000)";
 
-    pDB->execute(sStmt, true);
+    pDB->execute(sStmt);
 
     Terminal::displayCaption("\n\nNow execute a SELECT statement to see what \n"
                              "ROWs you've inserted into the city TABLE.\n\n");
@@ -200,10 +194,9 @@ int main(int argc, char *argv[])
     // execute a SELECT statement to see what you've inserted
     sStmt = "SELECT name, district, countrycode, population FROM city\n"
             "WHERE district = 'Maryland'";
-    Terminal::displayStatement(sStmt);
-    Terminal::displayLabel("USA", "Cities in Maryland");
     pRS = pDB->executeQuery(sStmt);
-    Place::display(pRS, true);
+    Terminal::displayLabel("USA", "Cities in Maryland");
+    Place::display(pRS);
     pDB->deleteResultSet();
     Terminal::displayCaption("\n\nExecute a DELETE statement to remove\n"
                              "the rows you've just inserted into the city "
@@ -215,7 +208,7 @@ int main(int argc, char *argv[])
     // execute a DELETE statement to undo what you just inserted
     sStmt = "DELETE FROM city WHERE district = 'Maryland' AND\n"
             "(name = 'Columbia' OR name = 'Ellicott City')";
-    pDB->execute(sStmt, true);
+    pDB->execute(sStmt);
 
     // execute a SELECT statment to see what you've deleted
     Terminal::displayCaption("\n\nHere's another SELECT statement so "
@@ -223,10 +216,9 @@ int main(int argc, char *argv[])
                              "from the city TABLE.\n\n");
     sStmt = "SELECT name, district, countrycode, population FROM city\n"
             "WHERE district = 'Maryland'";
-    Terminal::displayStatement(sStmt);
-    Terminal::displayLabel("USA", "Cities in Maryland");
     pRS = pDB->executeQuery(sStmt);
-    Place::display(pRS, true);
+    Terminal::displayLabel("USA", "Cities in Maryland");
+    Place::display(pRS);
     pDB->deleteResultSet();
     Terminal::displayCaption("\n\nYou've deleted the records you added and "
                              "the city TABLE is restored to its original "
@@ -237,7 +229,7 @@ int main(int argc, char *argv[])
     Terminal::displayCaption("Here's another four column SELECT statement.\n"
                              "Note the various conditions in the WHERE clause " 
                              "and note the\nparentheses. The query behaves very "
-                             "differently without the parentheses!\n\n\n");
+                             "differently without parentheses!\n\n\n");
 
     sStmt       = "SELECT country.name, city.name, "
                   "country.HeadOfState, country.Population\n"
@@ -246,34 +238,32 @@ int main(int argc, char *argv[])
                   "AND country.capital = city.id "
                   "AND (country.name < 'D' OR country.name > 'T')"
                   "\nORDER BY country.name DESC";
-    Terminal::displayStatement(sStmt);
-    Terminal::displayLabel("Continent", "Europe");
     pRS = pDB->executeQuery(sStmt);
-    Place::display(pRS, true);
+    Terminal::displayLabel("Continent", "Europe");
+    Place::display(pRS);
     Terminal::waitForUserInput();
 
     //******************************* Screen 7 ******************************
-    Terminal::displayCaption("Let use the countrylanguage TABLE to find out "
+    Terminal::displayCaption("Let's use the countrylanguage TABLE to find out "
                              "the percentage of English speakers by country."
                              "\nThis SQL query produces a name and a long "
                              "double. The Language ResultSet display class\n"
-                             "is used to display this query.\n\n\n");
+                             "is used to display these query results.\n\n\n");
 
     sStmt =  "SELECT name, percentage FROM country, countrylanguage WHERE\n"
              "country.code=countrylanguage.countrycode "
              "AND language='English' AND percentage >= 1.0\n"
              "ORDER BY percentage DESC";
 
-    Terminal::displayStatement(sStmt);
-    Terminal::displayLabel("Percentage of English Speakers by Country");
     pRS = pDB->executeQuery(sStmt);
-    Language::display(pRS, true);
-    Terminal::displayCaption("\n\nYou now know quite a bit about SQL "
-                            "statements. Alter some of the SQL\n"
+    Terminal::displayLabel("Percentage of English Speakers by Country");
+    Language::display(pRS);
+    Terminal::displayCaption("\n\nYou now know quite a bit about SQL. "
+                            "Alter some of the SQL\n"
                             "statements you've used in this tutorial.\n"
                             "Play around and have fun!\n\n\n");
   }
-  catch(const SQLException &e)
+  catch(const sql::SQLException &e)
   {
     cerr << "SQL EXCEPTION:\n";
     cerr << "code:  " << e.getErrorCode() << endl;

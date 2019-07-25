@@ -12,7 +12,7 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/14/2019    John Schwartzman
+ *      07/21/2019    John Schwartzman
  *
  *****************************************************************************/
 #ifndef LANGUAGE_H  //********************************************************
@@ -32,10 +32,8 @@ public:
              long double percent) : _sField1(country),
                                     _nField2(percent)    {}
     ~Language() {}                         // destructor
-    static void clearCount()    { _snRecCount = 0; }
-    static long getCount()      { return _snRecCount; }
     void display();
-    static long display(sql::ResultSet* pRS, bool bDisplayCount = false);
+    static long display(sql::ResultSet* pRS, bool bDisplayCount = true);
 };
 
 #endif //************************* LANGUAGE_H *******************************

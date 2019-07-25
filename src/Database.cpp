@@ -12,7 +12,7 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/12/2019    John Schwartzman
+ *      07/21/2019    John Schwartzman
  *
  *****************************************************************************/
 #include "Terminal.h"
@@ -26,17 +26,26 @@ bool Database::execute(const string sStatement, bool bDisplay)
     {
         Terminal::displayStatement(sStatement);
     }
+    
     return _pStatement->execute(sStatement);
 }
 
-sql::ResultSet* Database::executeQuery(const std::string sSQLStatement)
+sql::ResultSet* Database::executeQuery(const std::string sQuery,
+                                       bool bDisplay)
 {
         if (_pRS != nullptr)
         {
             delete _pRS;
             _pRS = nullptr;
         }
-        _pRS = _pStatement->executeQuery(sSQLStatement);
+
+        _pRS = _pStatement->executeQuery(sQuery);
+
+        if (bDisplay)
+        {
+            Terminal::displayStatement(sQuery);
+        }
+
         return _pRS;
 }
 
@@ -48,19 +57,19 @@ long Database::queryHasRecords(const string sQuery, bool bDisplay)
     }
 
     sql::ResultSet* pRS = _pStatement->executeQuery(sQuery);
-    long nCount = 0;
+    long nCount         = 0;
 
     while (pRS->next())
     {
         ++nCount;
     }
+    delete pRS;
 
     if (bDisplay)
     {
         Terminal::displayCount(nCount);
     }
 
-    delete pRS;
     return nCount;
 }
 
@@ -74,13 +83,13 @@ long Database::executeCountQuery(const string sQuery, bool bDisplay)
     sql::ResultSet* pRS = _pStatement->executeQuery(sQuery);
     pRS->next();                        // move into the ResultSet
     long nCount = pRS->getUInt64(1);    // and get its first and only record 
+    delete pRS;
     
     if (bDisplay)
     {
         Terminal::displayCount(nCount);
     }
 
-    delete pRS;
     return nCount;
 }
 

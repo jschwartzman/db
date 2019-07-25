@@ -12,7 +12,7 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/19/2019    John Schwartzman
+ *      07/21/2019    John Schwartzman
  *
  *****************************************************************************/
 
@@ -21,14 +21,9 @@
 #include "Terminal.h"
 #include "Language.h"
 
-using namespace std;
-using namespace utility;
-
-long Language::_snRecCount = 0;    // static counter
-
 void Language::display()
 {
-    StrStrmBuf ssb;
+    utility::StrStrmBuf ssb;
     ssb.rpad(_sField1, 30);
     long double ld = _nField2;
     string s = to_string(ld);
@@ -51,19 +46,19 @@ void Language::display()
 
 long Language::display(sql::ResultSet *pRS, bool bDisplay)
 {
-    _snRecCount = 0;
-    Language* pLanguage;
+    long nCount = 0;
     while (pRS->next())
     {
-        pLanguage = new Language(pRS->getString(1),
-                                 pRS->getDouble(2));
-        pLanguage->display();                           
-        ++_snRecCount;
+        Language* pLanguage = new Language(pRS->getString(1),
+                                           pRS->getDouble(2));
+        pLanguage->display();
+        delete pLanguage;                           
+        ++nCount;
     }
 
     if (bDisplay)
     {
-        Terminal::displayCount(_snRecCount);
+        Terminal::displayCount(nCount);
     }
-    return Language::getCount();
+    return nCount;
 }
