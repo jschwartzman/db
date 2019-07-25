@@ -23,6 +23,17 @@
 
 namespace utility	{
 
+const long TEN			= 10;
+const long SIXTY		= 60;
+const long HOUR			= SIXTY * SIXTY;
+const long HUNDRED		= 100;
+const long THOUSAND 	= 1000;
+const long MILLION  	= THOUSAND * THOUSAND;
+const long BILLION 		= THOUSAND * MILLION;
+const long TRILLION 	= THOUSAND * BILLION;
+const long QUADRILLION	= THOUSAND * TRILLION;
+const long QUINTILLION  = THOUSAND * QUADRILLION;
+
 /*****************************************************************************
  *
  *  class StrStrmBuf : public std::stringstream

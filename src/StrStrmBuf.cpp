@@ -15,7 +15,7 @@
  *  AUTHOR:
  *      10/28/2011    John Schwartzman
  *		06/29/2018	  John Schwartzman
- *		07/23/2019	  John Schwartzman
+ *		07/25/2019	  John Schwartzman
  *****************************************************************************/
 #include <locale>			// for formatDateTime()
 #include <cstring>			// for strlen() in formatDateTime()
@@ -200,18 +200,18 @@ StrStrmBuf& StrStrmBuf::trim()
 string toHHMMSS(long nTime)
 {
 	StrStrmBuf	ssb;
-	long 		nTimeTmp = nTime / (60 * 60);	// get hours
+	long 		nTimeTmp = nTime / HOUR;	// get hours
 
-	if (nTimeTmp < 10) ssb.put('0');			// write hours
+	if (nTimeTmp < TEN) ssb.put('0');		// write hours
 	ssb << nTimeTmp << ':';
-	nTime %= (60 * 60);							// remove hours
+	nTime %= HOUR;							// remove hours
 
-	nTimeTmp = nTime / 60;						// get minutes
-	if (nTimeTmp < 10) ssb.put('0');			//rpad write minutes
+	nTimeTmp = nTime / SIXTY;				// get minutes
+	if (nTimeTmp < TEN) ssb.put('0');		//rpad write minutes
 	ssb << nTimeTmp << ':';
 
-	nTime %= 60;								// get seconds
-	if (nTime < 10) ssb.put('0');				// write seconds
+	nTime %= SIXTY;							// get seconds
+	if (nTime < TEN) ssb.put('0');			// write seconds
 	ssb << nTime;
 	return ssb.str();
 }
@@ -220,50 +220,112 @@ string toHHMMSS(long nTime)
  *
  * string commaSeparate(long n)
  *
- * 		comma separate a long into billions, millions, thousands and ones
+ * 		comma separate a long into powers of 10^3
  *
  *****************************************************************************/
 string commaSeparate(long n)
 {
 	bool		bFoundFactor(false);
 	StrStrmBuf	ssb;
-	long		nTmp = n / (1000 * 1000 * 1000);	// get billions
-	if (nTmp != 0)
-	{
-		n -= nTmp * (1000 * 1000 * 1000);			// remove billions
-		bFoundFactor = true;
-		ssb << nTmp << ',';							// write billions
-	}
+	long		nTmp;
 
-	nTmp = n / (1000 * 1000);						// get millions
+	nTmp = n / QUINTILLION;							// get quintillions
 	if (nTmp || bFoundFactor)
 	{
-		n -= nTmp * (1000 * 1000);					// remove millions
+		n -= nTmp * QUINTILLION;					// remove quintillions
+		if (!bFoundFactor)
+		{
+			ssb << nTmp << ',';						// write quintillions
+		}
+		else
+		{
+			if (nTmp < HUNDRED) ssb.put('0');		// write quintillions
+			if (nTmp < TEN)  ssb.put('0');
+			ssb << nTmp << ',';
+		}
+		bFoundFactor = true;
+	}
+	
+	nTmp = n / QUADRILLION;							// get quadrillions
+	if (nTmp || bFoundFactor)
+	{
+		n -= nTmp * QUADRILLION;					// remove quadrillions
+		if (!bFoundFactor)
+		{
+			ssb << nTmp << ',';						// write quadrillions
+		}
+		else
+		{
+			if (nTmp < HUNDRED) ssb.put('0');		// write quadrillions
+			if (nTmp < TEN)  ssb.put('0');
+			ssb << nTmp << ',';
+		}
+		bFoundFactor = true;
+	}
+	
+	nTmp = n / TRILLION;							// get trillions
+	if (nTmp || bFoundFactor)
+	{
+		n -= nTmp * TRILLION;						// remove trillions
+		if (!bFoundFactor)
+		{
+			ssb << nTmp << ',';						// write trillions
+		}
+		else
+		{
+			if (nTmp < HUNDRED) ssb.put('0');		// write trillions
+			if (nTmp < TEN)  ssb.put('0');
+			ssb << nTmp << ',';
+		}
+		bFoundFactor = true;
+	}
+
+	nTmp = n / BILLION;								// get billions
+	if (nTmp || bFoundFactor)
+	{
+		n -= nTmp * BILLION;						// remove billions
+		if (!bFoundFactor)
+		{
+			ssb << nTmp << ',';						// write billions
+		}
+		else
+		{
+			if (nTmp < HUNDRED) ssb.put('0');		// write billions
+			if (nTmp < TEN)  ssb.put('0');
+			ssb << nTmp << ',';
+		}
+		bFoundFactor = true;
+	}
+
+	nTmp = n / MILLION;								// get millions
+	if (nTmp || bFoundFactor)
+	{
+		n -= nTmp * MILLION;						// remove millions
 		if (!bFoundFactor)
 		{
 			ssb << nTmp << ',';						// write millions
 		}
 		else
 		{
-			if (nTmp < 100) ssb.put('0');			// write millions
-			if (nTmp < 10)  ssb.put('0');
+			if (nTmp < HUNDRED) ssb.put('0');		// write millions
+			if (nTmp < TEN)  ssb.put('0');
 			ssb << nTmp << ',';
 		}
 		bFoundFactor = true;
 	}
 
-	nTmp = n / 1000;								// get thousands
+	nTmp = n / THOUSAND;							// get thousands
 	if (nTmp || bFoundFactor)
 	{
-		n -= nTmp * 1000;							// remove thousands
+		n -= nTmp * THOUSAND;						// remove thousands
 		if (!bFoundFactor)
 		{
 			ssb << nTmp << ',';						// write thousands
 		}
 		else
 		{
-			if (nTmp < 100) ssb.put('0');			// write thousands
-			if (nTmp < 10)  ssb.put('0');
+			if (nTmp < HUNDRED) ssb.put('0');		// write thousands
+			if (nTmp < TEN)  ssb.put('0');
 			ssb << nTmp << ',';
 		}
 		bFoundFactor = true;
@@ -275,8 +337,8 @@ string commaSeparate(long n)
 	}
 	else
 	{
-		if (n < 100) ssb.put('0');					// write units
-		if (n < 10)  ssb.put('0');
+		if (n < HUNDRED) ssb.put('0');				// write units
+		if (n < TEN)  ssb.put('0');
 		ssb << n;
 	}
 	return ssb.str();
