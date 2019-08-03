@@ -12,7 +12,7 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      08/01/2019    John Schwartzman
+ *      08/03/2019    John Schwartzman
  *
  *****************************************************************************/
 #include <stdlib.h>             // defines EXIT_SUCCESS and EXIT_FAILURE
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
   {
     // When pDB goes out of scope, the Database object pointed to
     // by pDB will be automatically deleted.
-    unique_ptr <Database> pDB(new Database("worlduser", "worlduser123"));
+    std::unique_ptr <Database> pDB(new Database("worlduser", "worlduser123"));
 
     Terminal::displayLabel("A Gentle Introduction to SQL");
     Terminal::displayCaption("\n\nWelcome to this brief SQL tutorial.\n"
@@ -268,16 +268,16 @@ int main(int argc, char *argv[])
   }
   catch(const sql::SQLException &e)
   {
-    cerr << "SQL EXCEPTION:\n";
-    cerr << "code:  " << e.getErrorCode() << endl;
-    cerr << "state: " << e.getSQLState() << endl;
-    cerr << e.what() << endl;
+    std::cerr << "SQL EXCEPTION:\n";
+    std::cerr << "code:  " << e.getErrorCode() << std::endl;
+    std::cerr << "state: " << e.getSQLState() << std::endl;
+    std::cerr << e.what() << std::endl;
     return EXIT_FAILURE;
   }
   catch (const std::exception &e)
   {
-    cerr << "EXCEPTION:\n";
-    cerr << e.what() << endl;
+    std::cerr << "EXCEPTION:\n";
+    std::cerr << e.what() << std::endl;
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;

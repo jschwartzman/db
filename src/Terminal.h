@@ -12,7 +12,7 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/23/2019    John Schwartzman
+ *      08/03/2019    John Schwartzman
  *
  *****************************************************************************/
 
@@ -21,7 +21,8 @@
 
 #include <iostream>		// for std::cout
 
-using namespace std;
+using std::cout;
+using std::string;
 
 class Terminal
 {
@@ -37,34 +38,18 @@ public:
 	static constexpr char* RESET  = (char*)"\033[0m";		//     normal text
 
 	static void displayCount(const long nCount);
+	static void waitForUserInput();
+	static void displayStatement(const string& s);
+	static void displayLabel(const string& sLabel, 
+							 const string& sContent = "");
+
 	static inline void clearScreen() { cout << "\033[2J\033[1;1H"; }
 	static inline void resetAndClearScreen() { system("clear"); }
-	static inline void waitForUserInput()
-	{
-		cout << RED << "\n\n\nPress ENTER to continue..." << RESET;
-		getc(stdin);
-		clearScreen();
-	}
 	static inline void writeYellow(const string& sContent)
 	{
 		cout << YELLOW << sContent << RESET;
 	}
-	static inline void displayStatement(const string& s)
-	{
-		cout << GREEN   << "===== " 
-			 << VIOLET  << "Executing: " 
-			 << YELLOW  << s 
-			 << GREEN << " =====\n"
-			 << RESET;
-	}
-	static inline void displayLabel(const string& sLabel, 
-									const string& sContent = "")
-	{
-		cout << GREEN    << "\n===== " 
-			 << VIOLET   << sLabel << ": " << BLUE
-			 << sContent << GREEN  << " =====\n"
-			 << RESET;
-	}
+
 	static inline void displayCaption(const string& sCaption)
 	{
 		cout << CYAN << sCaption << RESET;

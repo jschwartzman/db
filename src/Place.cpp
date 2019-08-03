@@ -12,7 +12,7 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/21/2019    John Schwartzman
+ *      08/03/2019    John Schwartzman
  *
  *****************************************************************************/
 
@@ -28,7 +28,7 @@ void Place::display()
     ssb.rpad(_sField2, 34);
     ssb.rpad(_sField3, 34);
     ssb.lpad(utility::commaSeparate(_nField4), 14);
-    ssb << endl;
+    ssb << std::endl;
     Terminal::writeYellow(ssb);
 }
 

@@ -27,10 +27,6 @@
 class Database
 {
 private:
-    std::string      _sUser;         // user name
-    std::string      _sPassword;     // user password
-    std::string      _sAddress;      // user ip address - default localhost
-    std::string      _sSchema;       // database - default world
     sql::Driver*     _pDriver;
     sql::Connection* _pConnection;
     sql::Statement*  _pStatement;
@@ -40,15 +36,11 @@ public:
     Database(std::string sUser,      // constructor
              std::string sPassword,
              std::string sAddress = "tcp://127.0.0.1:3306", //localhost
-             std::string sSchema = "world") : _sUser(sUser),
-                                              _sPassword(sPassword),
-                                              _sAddress(sAddress),
-                                              _sSchema(sSchema),
-                                              _pRS(nullptr)
+             std::string sSchema = "world") : _pRS(nullptr)
     {
         _pDriver = get_driver_instance();
-        _pConnection = _pDriver->connect(_sAddress, _sUser, _sPassword);
-        _pConnection->setSchema(_sSchema);
+        _pConnection = _pDriver->connect(sAddress, sUser, sPassword);
+        _pConnection->setSchema(sSchema);
         _pStatement = _pConnection->createStatement();
     }
     ~Database()                     // destructor

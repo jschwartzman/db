@@ -12,7 +12,7 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/21/2019    John Schwartzman
+ *      08/03/2019    John Schwartzman
  *
  *****************************************************************************/
 
@@ -26,7 +26,7 @@ void Language::display()
     utility::StrStrmBuf ssb;
     ssb.rpad(_sField1, 30);
     long double ld = _nField2;
-    string s = to_string(ld);
+    string s = std::to_string(ld);
     if (ld == 100.0)
     {
         s = s.substr(0, 5);
@@ -40,7 +40,7 @@ void Language::display()
         s = s.substr(0, 4);
     }
     ssb.lpad(s, 6);
-    ssb << endl;
+    ssb << std::endl;
     Terminal::writeYellow(ssb);
 }
 
