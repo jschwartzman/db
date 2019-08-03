@@ -12,7 +12,7 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/21/2019    John Schwartzman
+ *      08/02/2019    John Schwartzman
  *
  *****************************************************************************/
 #ifndef LANGUAGE_H  //********************************************************
@@ -23,7 +23,6 @@ typedef sql::ResultSet* pRS;    // just the type definition is sufficient here
 class Language
 {
 private:
-    static long         _snRecCount;
     const std::string   _sField1;
     const long double   _nField2;
 

@@ -12,7 +12,7 @@
  *      g++ 9.1.1
  *
  *  AUTHOR:
- *      07/25/2019    John Schwartzman
+ *      08/01/2019    John Schwartzman
  *
  *****************************************************************************/
 #include <stdlib.h>             // defines EXIT_SUCCESS and EXIT_FAILURE
@@ -72,8 +72,8 @@ int main(int argc, char *argv[])
                          "FROM country INNER JOIN city\n"
                          "WHERE country.Continent = 'North America' "
                          "AND country.capital = city.ID AND "
-                         "country.Population >= 1000000"
-                         "\nORDER BY country.name";
+                         "country.Population >= 1000000\n"
+                         "ORDER BY country.name";
 
     sql::ResultSet* pRS = pDB->executeQuery(sSelectStmt);
     Terminal::displayLabel("Continent", "North America");
@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
                              "You're using the Place ResultSet display class "
                              "to display these and other, similar query results."
                              "\n\n\n");
-    // reexecute the SELECT statement we used earlier
+    // reexecute the SELECT statement used earlier
     pRS = pDB->executeQuery(sSelectStmt);
     Terminal::displayLabel("Continent", "North America");
     Place::display(pRS);
@@ -166,19 +166,22 @@ int main(int argc, char *argv[])
                              "of heads of state.\nThat is because some "
                              "heads of state are leaders of more \n"
                              "than one country. DISTINCT removes "
-                             "duplicates.\n\n");
+                             "duplicates.\n\nYou don't believe it?\n\n");
+    sCountQuery = "SELECT COUNT(HeadOfState) FROM country\n"
+                  "WHERE HeadOfState = 'Elisabeth II'";
+    pDB->executeCountQuery(sCountQuery);
 
     Terminal::waitForUserInput();
 
     //******************************* Screen 5 ******************************
-    Terminal::displayCaption("We can add items to and remove items from the "
+    Terminal::displayCaption("You can add items to and remove items from the "
                              "database.\nExecute an INSERT statment with multiple "
                              "rows.\nYou can also achieve the same results " 
                              "using two separate INSERT statements.\n\n"
-                             "The city TABLE has an ID COLUMN, but we don't "
+                             "The city TABLE has an ID COLUMN, but you don't "
                              "mention it in the the INSERT statement.\nThat's "
                              "because the ID COLUMN is a PRIMARY KEY. It is\n"
-                             "an auto incrementing value chosen by the RDBMS.\n\n");
+                             "an auto-incrementing value chosen by the RDBMS.\n\n");
 
     // execute an INSERT statement with multiple rows
     string sStmt = "INSERT INTO city (name, countrycode, district, population) "
@@ -202,7 +205,7 @@ int main(int argc, char *argv[])
                              "the rows you've just inserted into the city "
                              "TABLE.\nYou must be specific enough to avoid "
                              "deleting Columbia, North Caroline, if it\n"
-                             "exists in the database. That's why we need "
+                             "exists in the database. That's why you need "
                              "district = 'Maryland' in the WHERE clause.\n\n");
 
     // execute a DELETE statement to undo what you just inserted
