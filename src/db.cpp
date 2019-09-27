@@ -75,8 +75,8 @@ int main(int argc, char *argv[])
                          "country.Population >= 1000000\n"
                          "ORDER BY country.name";
 
-    sql::ResultSet* pRS = pDB->executeQuery(sSelectStmt);
-    Terminal::displayLabel("Continent", "North America");
+	sql::ResultSet *pRS = pDB->executeQuery(sSelectStmt);
+	Terminal::displayLabel("Continent", "North America");
     Place::display(pRS);
     pDB->deleteResultSet();
     Terminal::displayCaption("\n\nNOTE: You can change the SQL query "

@@ -93,7 +93,7 @@ long Database::executeCountQuery(const string sQuery, bool bDisplay)
     return nCount;
 }
 
-void Database::deleteResultSet()  // not necessary - may reduce memory usage
+void Database::deleteResultSet()  // may reduce memory usage
 { 
     if (_pRS != nullptr) 
     {
